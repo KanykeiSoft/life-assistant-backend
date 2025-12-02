@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: life_assistant_db
+    environment:
+      POSTGRES_DB: life_assistant
+      POSTGRES_USER: life_user
+      POSTGRES_PASSWORD: life_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - life_assistant_data:/var/lib/postgresql/data
+
+volumes:
+  life_assistant_data:
+
