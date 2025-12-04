@@ -6,6 +6,7 @@ import com.aiassistant.life_backend.dto.RegisterRequestDto;
 import com.aiassistant.life_backend.dto.UserResponseDto;
 import com.aiassistant.life_backend.model.User;
 import com.aiassistant.life_backend.repository.UserRepository;
+import com.aiassistant.life_backend.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -39,17 +42,19 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
-       User user = userRepository.findByEmail(dto.getEmail())
-               .orElseThrow(()-> new RuntimeException("User not found"));
-       if(!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())){
-           throw new RuntimeException("Invalid email or password");
-       }
-        String fakeToken = "dummy-token-user-" + user.getId();
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        // 👉 Генерируем НАСТОЯЩИЙ JWT
+        String token = jwtUtil.generateToken(user);
 
         LoginResponseDto response = new LoginResponseDto();
         response.setUser(toUserResponseDto(user));
-        response.setToken(fakeToken);
-
+        response.setToken(token);
         return response;
     }
 
