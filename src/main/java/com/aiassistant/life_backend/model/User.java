@@ -1,5 +1,6 @@
 package com.aiassistant.life_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -62,7 +63,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    @JsonIgnore
     public String getPasswordHash() {
         return passwordHash;
     }

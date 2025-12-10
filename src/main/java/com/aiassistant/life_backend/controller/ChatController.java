@@ -2,7 +2,9 @@ package com.aiassistant.life_backend.controller;
 
 import com.aiassistant.life_backend.model.ChatSession;
 import com.aiassistant.life_backend.service.ChatService;
+import java.util.List;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +23,10 @@ public class ChatController {
         String email = authentication.getName();
         return chatService.createSession(email);
 
+    }
+    @GetMapping("/sessions")
+    public List<ChatSession> getMySessions (Authentication authentication){
+        String email = authentication.getName();
+        return chatService.getMySessions(email);
     }
 }

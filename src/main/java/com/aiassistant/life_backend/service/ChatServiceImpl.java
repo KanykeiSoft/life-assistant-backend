@@ -5,6 +5,7 @@ import com.aiassistant.life_backend.model.User;
 import com.aiassistant.life_backend.repository.ChatSessionRepository;
 import com.aiassistant.life_backend.repository.UserRepository;
 import java.time.Instant;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,5 +27,14 @@ public class ChatServiceImpl implements ChatService{
         chatSession.setTitle("New Chat");
         chatSession.setCreatedAt(Instant.now());
         return sessionRepository.save(chatSession);
+    }
+
+    @Override
+    public List<ChatSession> getMySessions(String email) {
+        User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return sessionRepository.findByUserId(user.getId());
+
     }
 }

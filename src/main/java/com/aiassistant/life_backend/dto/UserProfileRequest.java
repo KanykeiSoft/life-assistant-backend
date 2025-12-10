@@ -37,4 +37,6 @@ public class UserProfileRequest {
     public void setAssistantStyle(String assistantStyle) {
         this.assistantStyle = assistantStyle;
     }
+
+
 }
