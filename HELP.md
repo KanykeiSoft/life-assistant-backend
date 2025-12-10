@@ -4,6 +4,8 @@ The following was discovered as part of building this project:
 * The original package name 'com..aiassistant.life-assistant-backend' is invalid and this project uses 'com.aiassistant.life_assistant_backend' instead.
 
 # Getting Started
+# Trigger CI
+
 
 ### Reference Documentation
 For further reference, please consider the following sections:
