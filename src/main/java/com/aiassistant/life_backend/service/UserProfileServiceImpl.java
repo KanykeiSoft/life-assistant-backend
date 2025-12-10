@@ -5,7 +5,9 @@ import com.aiassistant.life_backend.model.User;
 import com.aiassistant.life_backend.model.UserProfile;
 import com.aiassistant.life_backend.repository.UserProfileRepository;
 import com.aiassistant.life_backend.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserProfileServiceImpl implements UserProfileService{
 
     private final UserRepository userRepository;
