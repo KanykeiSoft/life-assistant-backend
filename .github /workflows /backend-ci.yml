@@ -21,9 +21,11 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21'      # если у тебя Java 17 — поставь '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
 
       - name: Run tests
         run: mvn -B test
+
+
