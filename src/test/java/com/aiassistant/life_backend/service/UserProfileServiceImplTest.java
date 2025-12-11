@@ -1,11 +1,10 @@
-package com.aiassistant.life_assistant_backend.service;
+package com.aiassistant.life_backend.service;
 
 import com.aiassistant.life_backend.dto.UserProfileRequest;
 import com.aiassistant.life_backend.model.User;
 import com.aiassistant.life_backend.model.UserProfile;
 import com.aiassistant.life_backend.repository.UserProfileRepository;
 import com.aiassistant.life_backend.repository.UserRepository;
-import com.aiassistant.life_backend.service.UserProfileServiceImpl;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

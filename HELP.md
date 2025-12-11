@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com..aiassistant.life-assistant-backend' is invalid and this project uses 'com.aiassistant.life_assistant_backend' instead.
+* The original package name 'com..aiassistant.life-assistant-backend' is invalid and this project uses 'com.aiassistant.life_backend' instead.
 
 # Getting Started
 # Trigger CI
