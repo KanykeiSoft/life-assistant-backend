@@ -1,4 +1,4 @@
-package com.aiassistant.life_assistant_backend;
+package com.aiassistant.life_backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
