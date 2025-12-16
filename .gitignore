@@ -37,7 +37,7 @@ build/
 ### Секреты и локальные конфиги
 *.env
 .env.*
-application-local.properties
+src/main/resources/application-local.properties
 application-local.yml
 
 
