@@ -1,22 +1,43 @@
 package com.aiassistant.life_backend.dto;
 
 public class ChatRequest {
-    private Long sessionId;   // может быть null для новой сессии
+
     private String message;
+    private Long chatSessionId;
+    private String systemPrompt;
+    private String model;
 
-    public Long getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(Long sessionId) {
-        this.sessionId = sessionId;
-    }
+    public ChatRequest() {}
 
     public String getMessage() {
         return message;
     }
 
+    public Long getChatSessionId() {
+        return chatSessionId;
+    }
+
+    public String getSystemPrompt() {
+        return systemPrompt;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void setChatSessionId(Long chatSessionId) {
+        this.chatSessionId = chatSessionId;
+    }
+
+    public void setSystemPrompt(String systemPrompt) {
+        this.systemPrompt = systemPrompt;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 }

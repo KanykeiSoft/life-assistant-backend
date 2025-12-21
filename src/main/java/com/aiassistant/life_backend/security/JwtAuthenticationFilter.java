@@ -36,59 +36,79 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. Читаем заголовок Authorization
-        String header = request.getHeader("Authorization");
+        try {
+            // DEBUG (можно оставить на время)
+            System.out.println("JWT FILTER PATH = " + request.getServletPath());
+            System.out.println("AUTH HEADER = " + request.getHeader("Authorization"));
 
-        // Если токена нет или формат неправильный — пропускаем дальше
-        if (!StringUtils.hasText(header) || !header.startsWith("Bearer ")) {
+            // 1. Читаем заголовок Authorization
+            String header = request.getHeader("Authorization");
+
+            // Если токена нет или формат неправильный — пропускаем дальше
+            if (!StringUtils.hasText(header) || !header.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 2. Извлекаем токен (Bearer <token>)
+            String token = header.substring(7);
+
+            // 3. Проверяем токен
+            if (!jwtUtil.validateToken(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 4. Достаём userId из токена
+            Long userId = jwtUtil.getUserId(token);
+
+            // 5. Ищем пользователя в БД
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 6. Создаём UserDetails
+            UserDetails principal =
+                    org.springframework.security.core.userdetails.User
+                            .withUsername(user.getEmail())
+                            .password(user.getPasswordHash())
+                            .authorities("ROLE_USER")
+                            .build();
+
+            // 7. Authentication
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            principal,
+                            null,
+                            principal.getAuthorities()
+                    );
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+
+            // 8. Кладём в SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("AUTH SET = " + SecurityContextHolder.getContext().getAuthentication());
+            System.out.println("PATH DONE = " + request.getServletPath());
+
+
+            // 9. Продолжаем цепочку
             filterChain.doFilter(request, response);
-            return;
-        }
 
-        // 2. Извлекаем токен (Bearer <token>)
-        String token = header.substring(7);
-
-        // 3. Проверяем токен
-        if (!jwtUtil.validateToken(token)) {
+        } catch (Exception e) {
+            // 🔥 ВАЖНО: не ломаем запрос
+            SecurityContextHolder.clearContext();
             filterChain.doFilter(request, response);
-            return;
         }
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        System.out.println("BEFORE CHAIN AUTH = " + SecurityContextHolder.getContext().getAuthentication());
 
-        // 4. Достаём userId из токена
-        Long userId = jwtUtil.getUserId(token);
-
-        // 5. Ищем пользователя в БД
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // 6. Создаём UserDetails (для Spring Security)
-        UserDetails principal = org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPasswordHash())
-                .authorities(Collections.singletonList(() -> "ROLE_USER"))
-                .build();
-
-        // 7. Создаём объект Authentication
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        principal,
-                        null,
-                        principal.getAuthorities()
-                );
-
-        // (опционально) информация о запросе
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request)
-        );
-
-        // 8. Сохраняем Authentication → теперь юзер считается авторизованным
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // 9. Продолжаем цепочку фильтров
-        filterChain.doFilter(request, response);
+        return request.getServletPath().startsWith("/api/auth/");
     }
 }
 

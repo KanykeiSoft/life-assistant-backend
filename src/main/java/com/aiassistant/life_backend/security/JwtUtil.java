@@ -57,7 +57,6 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .requireAudience(audience)
                     .setAllowedClockSkewSeconds(CLOCK_SKEW_SECONDS)
                     .setSigningKey(key)
                     .build()
